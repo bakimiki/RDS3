@@ -198,6 +198,7 @@
       pointer-events: none;
       opacity: 0;
       transition: opacity 0.4s ease;
+      background: #fff;
     }
 
     #detail-panel.open {
@@ -467,19 +468,9 @@
 // ── CONFIG ──────────────────────────────────────────────────────────
 const SHEET_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS_OH9hvOpRMTTEIh-A3xUPJ6Y9abDny5t5xqox_0mhHKNd8x6y1b4kaZkqcRw3a50zixTMRuIsuyZ3/pub?gid=736388199&single=true&output=csv';
 
-// Google Drive image: paste your folder's file IDs here OR use filename convention
-// Format: { "superstition_value": "google_drive_file_id" }
-// For now we use placeholder — replace with real Drive file IDs
-const DRIVE_IDS = {};
-
-function getDriveURL(fileId) {
-  return `https://drive.google.com/thumbnail?id=${fileId}&sz=w800`;
-}
-
 function getImageURL(row) {
-  const key = (row.Superstition || '').toLowerCase().replace(/\s+/g, '_');
-  if (DRIVE_IDS[key]) return getDriveURL(DRIVE_IDS[key]);
-  // fallback placeholder
+  const id = (row.ImageID || '').trim();
+  if (id) return `https://lh3.googleusercontent.com/d/${id}`;
   return `https://placehold.co/400x300/e8e8e8/888?text=${encodeURIComponent(row.Superstition || 'Image')}`;
 }
 
