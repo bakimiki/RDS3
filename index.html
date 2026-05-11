@@ -6,6 +6,7 @@
   <title>BEYOND THE FOG</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Helvetica+Neue:wght@300;400;500&display=swap');
+    @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
 
     * {
       margin: 0;
@@ -45,19 +46,19 @@
     }
 
     #header span {
-      font-size: clamp(18px, 2.5vw, 28px);
+      font-size: 50pt;
       font-weight: 400;
-      letter-spacing: 0.05em;
+      letter-spacing: -0.03em;
       line-height: 1;
     }
 
     /* ── FLOATING TEXTS ── */
     #floating-layer {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100vh;
+      top: 80px;
+      left: 32px;
+      right: 32px;
+      height: calc(55vh - 80px);
       pointer-events: none;
       z-index: 50;
       overflow: hidden;
@@ -65,21 +66,18 @@
 
     .floating-text {
       position: absolute;
-      font-size: 11px;
-      font-weight: 300;
-      letter-spacing: 0.02em;
-      color: var(--black);
+      font-family: 'Pretendard', 'Apple SD Gothic Neo', sans-serif;
+      font-size: 24pt;
+      font-weight: 500;
+      color: #000;
       white-space: nowrap;
-      opacity: 0.55;
-      animation: floatDrift linear infinite;
+      opacity: 0.28;
+      animation: floatDrift ease-in-out infinite alternate;
     }
 
     @keyframes floatDrift {
       0%   { transform: translate(0, 0); }
-      25%  { transform: translate(var(--dx1), var(--dy1)); }
-      50%  { transform: translate(var(--dx2), var(--dy2)); }
-      75%  { transform: translate(var(--dx3), var(--dy3)); }
-      100% { transform: translate(0, 0); }
+      100% { transform: translate(var(--dx1), var(--dy1)); }
     }
 
     /* ── HERO (blurred car) ── */
@@ -287,46 +285,60 @@
       opacity: 0.5;
     }
 
-    /* ── FOOTER ── */
-    #footer {
-      position: fixed;
-      bottom: 0;
-      left: 0;
+    /* ── JINX SECTION ── */
+    #jinx-section {
+      position: relative;
       width: 100%;
-      padding: 20px 32px;
+      min-height: 100vh;
       display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      z-index: 80;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    #jinx-bg-orb {
+      position: absolute;
+      top: -10%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 90vw;
+      height: 80vw;
+      background: radial-gradient(ellipse at 50% 30%, #d0d0d0 0%, #e8e8e8 40%, transparent 75%);
+      border-radius: 50%;
       pointer-events: none;
     }
 
-    #footer-left {
-      font-size: 11px;
-      letter-spacing: 0.06em;
-      color: var(--black);
-      text-transform: uppercase;
-    }
-
-    #footer-right {
-      font-size: 11px;
-      letter-spacing: 0.06em;
-      color: var(--black);
-      text-transform: uppercase;
-    }
-
-    /* ── INPUT AREA ── */
-    #jinx-form {
-      position: fixed;
-      bottom: 48px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 90;
+    #jinx-content {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      padding: 80px 32px 60px;
       display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 60px;
+    }
+
+    #jinx-labels {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      font-weight: 300;
+      letter-spacing: 0.04em;
+      color: var(--black);
+    }
+
+    #jinx-form {
+      display: flex;
+      align-items: center;
       gap: 0;
-      pointer-events: all;
       border-bottom: 1px solid var(--black);
-      width: 320px;
+      width: 60%;
+      max-width: 700px;
+      background: rgba(255,255,255,0.85);
+      padding: 12px 0;
     }
 
     #jinx-input {
@@ -334,12 +346,11 @@
       border: none;
       outline: none;
       font-family: inherit;
-      font-size: 11px;
+      font-size: 13px;
       font-weight: 300;
       letter-spacing: 0.06em;
       color: var(--black);
       width: 100%;
-      padding: 6px 0;
       text-transform: uppercase;
     }
 
@@ -351,12 +362,12 @@
       background: none;
       border: none;
       cursor: pointer;
-      font-size: 11px;
+      font-size: 13px;
       font-weight: 400;
-      letter-spacing: 0.06em;
       color: var(--black);
-      padding: 6px 0 6px 12px;
+      padding: 0 0 0 16px;
       text-transform: uppercase;
+      flex-shrink: 0;
     }
 
     /* ── LOADING ── */
@@ -378,6 +389,7 @@
       opacity: 0;
       pointer-events: none;
     }
+
 
     /* ── GRAY CIRCLE at bottom like figma ── */
     #bottom-orb {
@@ -412,7 +424,7 @@
 
 <!-- HERO -->
 <section id="hero">
-  <div id="hero-placeholder"></div>
+
 </section>
 
 <!-- SCROLL SECTION (populated by JS) -->
@@ -452,17 +464,20 @@
   <button id="close-btn" onclick="closeDetail()">&lt;&lt;</button>
 </div>
 
-<!-- FOOTER -->
-<footer id="footer">
-  <div id="footer-left">Add Your Jinx</div>
-  <div id="footer-right">Every Jinx added deepens the fog</div>
-</footer>
-
-<!-- JINX INPUT -->
-<div id="jinx-form">
-  <input id="jinx-input" type="text" placeholder="TYPE YOUR JINX" maxlength="60" />
-  <button id="jinx-submit" onclick="addJinx()">→</button>
-</div>
+<!-- JINX SECTION (bottom of page) -->
+<section id="jinx-section">
+  <div id="jinx-bg-orb"></div>
+  <div id="jinx-content">
+    <div id="jinx-labels">
+      <span>Add Your Jinx</span>
+      <span>Every Jinx added deepens the fog</span>
+    </div>
+    <div id="jinx-form">
+      <input id="jinx-input" type="text" placeholder="TYPE YOUR JINX HERE" maxlength="60" />
+      <button id="jinx-submit" onclick="addJinx()">→</button>
+    </div>
+  </div>
+</section>
 
 <script>
 // ── CONFIG ──────────────────────────────────────────────────────────
@@ -643,29 +658,20 @@ function spawnFloatingText(text) {
   el.className = 'floating-text';
   el.textContent = text;
 
-  const x = Math.random() * 80 + 5;
-  const y = Math.random() * 60 + 5;
-  const dur = 18 + Math.random() * 20;
-
-  const dx1 = (Math.random() - 0.5) * 120;
-  const dy1 = (Math.random() - 0.5) * 60;
-  const dx2 = (Math.random() - 0.5) * 100;
-  const dy2 = (Math.random() - 0.5) * 80;
-  const dx3 = (Math.random() - 0.5) * 80;
-  const dy3 = (Math.random() - 0.5) * 40;
+  const x = Math.random() * 80 + 2;
+  const y = Math.random() * 85 + 2;
 
   el.style.left = x + '%';
   el.style.top = y + '%';
-  el.style.animationDuration = dur + 's';
-  el.style.setProperty('--dx1', dx1 + 'px');
-  el.style.setProperty('--dy1', dy1 + 'px');
-  el.style.setProperty('--dx2', dx2 + 'px');
-  el.style.setProperty('--dy2', dy2 + 'px');
-  el.style.setProperty('--dx3', dx3 + 'px');
-  el.style.setProperty('--dy3', dy3 + 'px');
-  el.style.animationDelay = -(Math.random() * dur) + 's';
 
   layer.appendChild(el);
+}
+
+// Parallax: floating layer scrolls up faster than page
+function updateFloatingParallax() {
+  const layer = document.getElementById('floating-layer');
+  const scrollY = window.scrollY;
+  layer.style.transform = \`translateY(-\${scrollY * 0.5}px)\`;
 }
 
 function initFloatingTexts() {
