@@ -46,7 +46,7 @@
     }
 
     #header span {
-      font-size: 50pt;
+      font-size: 22px;
       font-weight: 400;
       letter-spacing: -0.03em;
       line-height: 1;
@@ -67,7 +67,7 @@
     .floating-text {
       position: absolute;
       font-family: 'Pretendard', 'Apple SD Gothic Neo', sans-serif;
-      font-size: 24pt;
+      font-size: 13px;
       font-weight: 500;
       color: #000;
       white-space: nowrap;
@@ -577,6 +577,13 @@ function updateGridStrip(idx) {
 
 // ── SCROLL HANDLER ────────────────────────────────────────────────────
 function onScroll() {
+  // fade out floating texts as user scrolls
+  const scrollY = window.scrollY;
+  const heroH = window.innerHeight;
+  const fadeProgress = Math.min(1, scrollY / (heroH * 0.4));
+  const layer = document.getElementById('floating-layer');
+  if (layer) layer.style.opacity = String(1 - fadeProgress);
+
   if (!items.length) return;
   const section = document.getElementById('scroll-section');
   const rect = section.getBoundingClientRect();
