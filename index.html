@@ -682,7 +682,8 @@ function initFloatingTexts() {
 // ── INIT ──────────────────────────────────────────────────────────────
 async function init() {
   try {
-    items = await fetchSheet();
+    const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 5000));
+    items = await Promise.race([fetchSheet(), timeout]);
   } catch (e) {
     console.warn('Sheet fetch failed:', e);
     items = [];
