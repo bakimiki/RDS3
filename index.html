@@ -292,9 +292,8 @@
 
     #close-btn {
       position: fixed;
-      top: 50%;
-      right: 32px;
-      transform: translateY(-50%);
+      top: 24px;
+      right: 180px;
       font-size: 14px;
       font-weight: 400;
       letter-spacing: 0.05em;
@@ -429,9 +428,31 @@
       background: radial-gradient(ellipse at 50% 100%, #c8c8c8 0%, #e8e8e8 50%, transparent 100%);
       border-radius: 50% 50% 0 0 / 100% 100% 0 0;
     }
+
+    /* ── CURSOR ORB ── */
+    #cursor-orb {
+      position: fixed;
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 130;
+      opacity: 0;
+      transform: translate(-50%, -50%);
+      transition: opacity 0.3s ease;
+      background: radial-gradient(circle, rgba(255,255,255,1) 30%, rgba(255,255,255,0.6) 60%, rgba(255,255,255,0) 100%);
+      filter: blur(8px);
+    }
+
+    #cursor-orb.visible {
+      opacity: 1;
+    }
   </style>
 </head>
 <body>
+
+<!-- CURSOR ORB -->
+<div id="cursor-orb"></div>
 
 <!-- LOADING -->
 <div id="loading">Loading</div>
@@ -737,6 +758,23 @@ async function init() {
 }
 
 init();
+
+// ── CURSOR ORB ──────────────────────────────────────────────────────
+const orb = document.getElementById('cursor-orb');
+
+document.getElementById('featured-wrap').addEventListener('mousemove', (e) => {
+  orb.style.left = e.clientX + 'px';
+  orb.style.top = e.clientY + 'px';
+});
+
+document.getElementById('featured-wrap').addEventListener('mouseenter', () => {
+  orb.classList.add('visible');
+});
+
+document.getElementById('featured-wrap').addEventListener('mouseleave', () => {
+  orb.classList.remove('visible');
+});
+
 </script>
 </body>
 </html>
