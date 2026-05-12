@@ -47,7 +47,7 @@
 
     #header span {
       font-size: 22px;
-      font-weight: 500;
+      font-weight: 400;
       letter-spacing: -0.03em;
       line-height: 1;
     }
@@ -142,6 +142,7 @@
       cursor: pointer;
       transition: opacity 0.35s ease;
       filter: grayscale(100%);
+      mix-blend-mode: multiply;
     }
 
     #featured-img:hover {
@@ -178,6 +179,7 @@
       height: 100%;
       object-fit: cover;
       filter: grayscale(100%);
+      mix-blend-mode: multiply;
     }
 
     /* spacer divs that create scroll height */
@@ -667,7 +669,7 @@ function spawnFloatingText(text) {
 
   const x = Math.random() * 70 + 2;
   const y = Math.random() * 70 + 5;
-  const dur = 5 + Math.random() * ;
+  const dur = 10 + Math.random() * 14;
   const dx1 = (Math.random() - 0.5) * 120;
   const dy1 = (Math.random() - 0.5) * 60;
 
