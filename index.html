@@ -36,7 +36,7 @@
       top: 0;
       left: 0;
       width: 100%;
-      z-index: 100;
+      z-index: 300;
       padding: 24px 32px;
       display: flex;
       justify-content: space-between;
@@ -196,11 +196,14 @@
       left: 0;
       width: 100%;
       height: 100%;
-      z-index: 200;
+      z-index: 150;
       pointer-events: none;
       opacity: 0;
       transition: opacity 0.4s ease;
-      background: #fff;
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      overflow-y: auto;
     }
 
     #detail-panel.open {
@@ -209,13 +212,25 @@
     }
 
     #detail-inner {
-      position: absolute;
-      top: 60px;
-      left: 32px;
-      right: 32px;
+      position: relative;
+      padding: 80px 32px 60px;
+      display: flex;
+      flex-direction: row;
+      align-items: start;
+      gap: 0;
+      min-height: 100%;
+    }
+
+    #detail-left {
+      flex: 0 0 200px;
+      padding-right: 40px;
+    }
+
+    #detail-right {
+      flex: 1;
       display: grid;
-      grid-template-columns: 140px 280px 1fr 1fr;
-      gap: 32px;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 40px;
       align-items: start;
     }
 
@@ -270,10 +285,12 @@
       line-height: 1.7;
       font-weight: 300;
       color: #222;
+      word-break: keep-all;
+      overflow-wrap: break-word;
     }
 
     #close-btn {
-      position: absolute;
+      position: fixed;
       top: 24px;
       right: 32px;
       font-size: 14px;
@@ -283,6 +300,7 @@
       background: none;
       border: none;
       color: var(--black);
+      z-index: 320;
     }
 
     #close-btn:hover {
@@ -442,27 +460,27 @@
 <!-- DETAIL PANEL -->
 <div id="detail-panel">
   <div id="detail-inner">
-    <!-- col 1: ref + title -->
-    <div>
+    <!-- left: ref + title + photo -->
+    <div id="detail-left">
       <div id="detail-ref">REF: <span id="d-ref"></span></div>
       <div id="detail-title"></div>
       <img id="detail-photo" src="" alt="" />
     </div>
-    <!-- col 2: meta -->
-    <div style="padding-top:40px">
-      <div class="detail-meta-row"><span class="label">CATEGORY</span><span id="d-category"></span></div>
-      <div class="detail-meta-row"><span class="label">REGION</span><span id="d-region"></span></div>
-      <div class="detail-meta-row"><span class="label">CLASSIFICATION</span><span id="d-classification"></span></div>
-    </div>
-    <!-- col 3: action log -->
-    <div style="padding-top:40px" class="detail-text-block">
-      <h4>ACTION LOG</h4>
-      <p id="d-action-log"></p>
-    </div>
-    <!-- col 4: control cost -->
-    <div style="padding-top:40px" class="detail-text-block">
-      <h4>CONTROL COST</h4>
-      <p id="d-control-cost"></p>
+    <!-- right: meta + text blocks equally spaced -->
+    <div id="detail-right">
+      <div>
+        <div class="detail-meta-row"><span class="label">CATEGORY</span><span id="d-category"></span></div>
+        <div class="detail-meta-row"><span class="label">REGION</span><span id="d-region"></span></div>
+        <div class="detail-meta-row"><span class="label">CLASSIFICATION</span><span id="d-classification"></span></div>
+      </div>
+      <div class="detail-text-block">
+        <h4>ACTION LOG</h4>
+        <p id="d-action-log"></p>
+      </div>
+      <div class="detail-text-block">
+        <h4>CONTROL COST</h4>
+        <p id="d-control-cost"></p>
+      </div>
     </div>
   </div>
   <button id="close-btn" onclick="closeDetail()">&lt;&lt;</button>
