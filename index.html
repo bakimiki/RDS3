@@ -200,7 +200,7 @@
       pointer-events: none;
       opacity: 0;
       transition: opacity 0.4s ease;
-      background: rgba(255, 255, 255, 0.75);
+      background: rgba(255, 255, 255, 0.45);
       backdrop-filter: blur(18px);
       -webkit-backdrop-filter: blur(18px);
       overflow-y: auto;
@@ -213,7 +213,7 @@
 
     #detail-inner {
       position: relative;
-      padding: 80px 32px 60px;
+      padding: 70px 32px 60px;
       display: flex;
       flex-direction: row;
       align-items: start;
@@ -239,15 +239,16 @@
       font-weight: 400;
       letter-spacing: 0.08em;
       text-transform: uppercase;
-      margin-bottom: 8px;
+      margin-bottom: 4px;
       color: var(--black);
     }
 
     #detail-title {
-      font-size: clamp(48px, 8vw, 96px);
+      font-size: clamp(32px, 5vw, 64px);
       font-weight: 300;
       line-height: 0.9;
       letter-spacing: -0.02em;
+      margin-bottom: 12px;
     }
 
     .detail-meta-row {
@@ -292,7 +293,7 @@
     #close-btn {
       position: fixed;
       top: 24px;
-      right: 32px;
+      right: 180px;
       font-size: 14px;
       font-weight: 400;
       letter-spacing: 0.05em;
@@ -335,7 +336,7 @@
       position: relative;
       z-index: 2;
       width: 100%;
-      padding: 80px 32px 60px;
+      padding: 70px 32px 60px;
       display: flex;
       flex-direction: column;
       align-items: center;
