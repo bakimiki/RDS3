@@ -267,10 +267,8 @@
 
     #detail-photo {
       width: 100%;
-      aspect-ratio: 4/3;
-      object-fit: cover;
-      margin-top: 16px;
-      filter: none;
+      height: auto;
+      object-fit: contain;
     }
 
     .detail-text-block h4 {
@@ -771,17 +769,17 @@ init();
 // ── CURSOR ORB ──────────────────────────────────────────────────────
 const orb = document.getElementById('cursor-orb');
 
-document.getElementById('featured-wrap').addEventListener('mousemove', (e) => {
+document.addEventListener('mousemove', (e) => {
   orb.style.left = e.clientX + 'px';
   orb.style.top = e.clientY + 'px';
-});
 
-document.getElementById('featured-wrap').addEventListener('mouseenter', () => {
-  orb.classList.add('visible');
-});
-
-document.getElementById('featured-wrap').addEventListener('mouseleave', () => {
-  orb.classList.remove('visible');
+  const featImg = document.getElementById('featured-img');
+  if (featImg) {
+    const rect = featImg.getBoundingClientRect();
+    const inside = e.clientX >= rect.left && e.clientX <= rect.right
+                && e.clientY >= rect.top  && e.clientY <= rect.bottom;
+    orb.classList.toggle('visible', inside);
+  }
 });
 
 </script>
