@@ -431,8 +431,8 @@
     /* ── CURSOR ORB ── */
     #cursor-orb {
       position: fixed;
-      width: 100px;
-      height: 100px;
+      width: 400px;
+      height: 400px;
       border-radius: 50%;
       pointer-events: none;
       z-index: 130;
@@ -440,7 +440,7 @@
       transform: translate(-50%, -50%);
       transition: opacity 0.4s ease, left 0.05s linear, top 0.05s linear;
       background: rgba(255, 255, 255, 1);
-      filter: none;
+      filter: blur(3px);
     }
 
     #cursor-orb.visible {
