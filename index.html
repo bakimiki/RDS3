@@ -656,7 +656,7 @@ window.addEventListener('scroll', onScroll, { passive: true });
 function openDetail() {
   const item = items[currentIndex];
   if (!item) return;
-
+ 
   document.getElementById('d-ref').textContent = String(currentIndex + 1).padStart(3, '0');
   document.getElementById('detail-title').textContent = item.Superstition || '';
   document.getElementById('d-category').textContent = item.Category || '';
@@ -664,14 +664,22 @@ function openDetail() {
   document.getElementById('d-classification').textContent = item.Classification || '';
   document.getElementById('d-action-log').textContent = item['Action Log'] || '';
   document.getElementById('d-control-cost').textContent = item['Control Cost'] || '';
-  document.getElementById('detail-photo').src = getImageURL(item);
-
+  const detailId = (item.DetailImageID || '').trim();
+  document.getElementById('detail-photo').src = detailId 
+    ? 'https://lh3.googleusercontent.com/d/' + detailId 
+    : getImageURL(item);
+ 
   document.getElementById('detail-panel').classList.add('open');
 }
-
+ 
 function closeDetail() {
   document.getElementById('detail-panel').classList.remove('open');
 }
+ 
+// close on ESC
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeDetail();
+});
 
 // close on ESC
 document.addEventListener('keydown', e => {
