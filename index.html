@@ -524,7 +524,7 @@ const SHEET_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS_OH9hvOpRMT
 
 function getImageURL(row) {
   const id = (row.ImageID || '').trim();
-  if (id) return `https://drive.google.com/thumbnail?id=${id}&sz=w800`;
+  if (id) return `https://lh3.googleusercontent.com/d/${id}`;
   return `https://placehold.co/400x300/e8e8e8/888?text=${encodeURIComponent(row.Superstition || 'Image')}`;
 }
 
@@ -659,7 +659,7 @@ function openDetail() {
   document.getElementById('d-control-cost').textContent = item['Control Cost'] || '';
   const detailId = (item.DetailImageID || '').trim();
   document.getElementById('detail-photo').src = detailId 
-    ? `https://drive.google.com/thumbnail?id=${detailId}&sz=w1200`
+    ? 'https://lh3.googleusercontent.com/d/' + detailId 
     : getImageURL(item);
  
   document.getElementById('detail-panel').classList.add('open');
