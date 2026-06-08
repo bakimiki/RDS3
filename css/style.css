@@ -1,0 +1,440 @@
+@import url('https://fonts.googleapis.com/css2?family=Helvetica+Neue:wght@300;400;500&display=swap');
+@import url('https://cdn.jsdelivr.net/npm/pretendard@latest/dist/web/static/pretendard.css');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --black: #000;
+  --white: #fff;
+  --gray: #888;
+  --light-gray: #e0e0e0;
+}
+
+body {
+  background: var(--white);
+  color: var(--black);
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-weight: 300;
+  overflow-x: hidden;
+  cursor: default;
+}
+
+/* ── HEADER ── */
+#header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 300;
+  padding: 24px 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  pointer-events: none;
+  mix-blend-mode: multiply;
+}
+
+#header span {
+  font-size: 22px;
+  font-weight: 400;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+/* ── FLOATING TEXTS ── */
+#floating-layer {
+  position: fixed;
+  top: 80px;
+  left: 32px;
+  right: 32px;
+  height: calc(55vh - 80px);
+  pointer-events: none;
+  z-index: 50;
+  overflow: hidden;
+}
+
+.floating-text {
+  position: absolute;
+  font-family: 'Pretendard', 'Apple SD Gothic Neo', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: #000;
+  white-space: nowrap;
+  opacity: 0.28;
+  animation: floatDrift ease-in-out infinite alternate;
+}
+
+@keyframes floatDrift {
+  from { transform: translate(0px, 0px); }
+  to   { transform: translate(var(--dx1), var(--dy1)); }
+}
+
+/* ── HERO (blurred car) ── */
+#hero {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+#hero-img {
+  width: 70%;
+  max-width: 900px;
+  filter: blur(18px) contrast(1.1);
+  opacity: 0.85;
+  object-fit: contain;
+  user-select: none;
+}
+
+#hero-placeholder {
+  width: 60%;
+  max-width: 800px;
+  aspect-ratio: 16/9;
+  background: radial-gradient(ellipse at 50% 60%, #1a1a1a 0%, #888 40%, #fff 100%);
+  filter: blur(28px) contrast(1.2);
+  border-radius: 50%;
+  opacity: 0.7;
+}
+
+/* ── SCROLL SECTION ── */
+#scroll-section {
+  position: relative;
+}
+
+/* sticky container that pins while we scroll through images */
+#sticky-container {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* the big featured image */
+#featured-wrap {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#featured-img {
+  max-width: 55vw;
+  max-height: 75vh;
+  object-fit: contain;
+  cursor: pointer;
+  transition: opacity 0.35s ease;
+  filter: grayscale(100%);
+  mix-blend-mode: multiply;
+}
+
+#featured-img:hover {
+  opacity: 0.85;
+}
+
+/* grid strip at bottom */
+#grid-strip {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  gap: 24px;
+  overflow: hidden;
+  height: 15vh;
+  padding: 0 32px;
+  box-sizing: border-box;
+}
+
+.grid-thumb {
+  flex: 0 0 calc((100% - 3 * 24px - 64px) / 4);
+  height: 100%;
+  overflow: hidden;
+  opacity: 0.55;
+  transition: opacity 0.3s;
+  cursor: default;
+}
+
+.grid-thumb.active {
+  opacity: 1;
+}
+
+.grid-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: grayscale(100%);
+  mix-blend-mode: multiply;
+}
+
+/* spacer divs that create scroll height */
+.scroll-spacer {
+  height: 100vh;
+}
+
+/* ── DETAIL PANEL ── */
+#detail-panel {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 150;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  overflow-y: auto;
+}
+
+#detail-panel.open {
+  pointer-events: all;
+  opacity: 1;
+}
+
+#detail-inner {
+  position: relative;
+  padding: 70px 32px 60px;
+  display: flex;
+  flex-direction: row;
+  align-items: start;
+  gap: 0;
+  min-height: 100%;
+}
+
+#detail-left {
+  flex: 0 0 200px;
+  padding-right: 40px;
+}
+
+#detail-right {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+  align-items: start;
+}
+
+#detail-ref {
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+  color: var(--black);
+}
+
+#detail-title {
+  font-size: clamp(32px, 5vw, 64px);
+  font-weight: 300;
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+  margin-bottom: 12px;
+}
+
+.detail-meta-row {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 6px;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+}
+
+.detail-meta-row .label {
+  font-weight: 500;
+  text-transform: uppercase;
+  min-width: 110px;
+}
+
+#detail-photo {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.detail-text-block h4 {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.detail-text-block p {
+  font-size: 12px;
+  line-height: 1.7;
+  font-weight: 300;
+  color: #222;
+  word-break: keep-all;
+  overflow-wrap: break-word;
+}
+
+#close-btn {
+  position: fixed;
+  top: 50%;
+  right: 32px;
+  transform: translateY(-50%);
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  background: none;
+  border: none;
+  color: var(--black);
+  z-index: 320;
+}
+
+#close-btn:hover {
+  opacity: 0.5;
+}
+
+/* ── JINX SECTION ── */
+#jinx-section {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: #fff;
+}
+
+#jinx-bg-orb {
+  position: absolute;
+  top: -10%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90vw;
+  height: 80vw;
+  background: radial-gradient(ellipse at 50% 30%, #d0d0d0 0%, #e8e8e8 40%, transparent 75%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+#jinx-content {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  padding: 70px 32px 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 60px;
+}
+
+#jinx-labels {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  font-weight: 300;
+  letter-spacing: 0.04em;
+  color: var(--black);
+}
+
+#jinx-form {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  border-bottom: 1px solid var(--black);
+  width: 60%;
+  max-width: 700px;
+  background: rgba(255,255,255,0.85);
+  padding: 12px 0;
+}
+
+#jinx-input {
+  background: transparent;
+  border: none;
+  outline: none;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 300;
+  letter-spacing: 0.06em;
+  color: var(--black);
+  width: 100%;
+  text-transform: uppercase;
+}
+
+#jinx-input::placeholder {
+  color: var(--gray);
+}
+
+#jinx-submit {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--black);
+  padding: 0 0 0 16px;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+/* ── LOADING ── */
+#loading {
+  position: fixed;
+  inset: 0;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  transition: opacity 0.6s ease;
+}
+
+#loading.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ── GRAY CIRCLE at bottom like figma ── */
+#bottom-orb {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 80px 0 200px;
+}
+
+#bottom-orb-shape {
+  width: 60vw;
+  height: 30vw;
+  background: radial-gradient(ellipse at 50% 100%, #c8c8c8 0%, #e8e8e8 50%, transparent 100%);
+  border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+}
+
+/* ── CURSOR ORB ── */
+#cursor-orb {
+  position: fixed;
+  width: 400px;
+  height: 400px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 130;
+  opacity: 0;
+  transform: translate(-50%, -50%);
+  transition: opacity 0.4s ease, left 0.05s linear, top 0.05s linear;
+  background: rgba(255, 255, 255, 1);
+  filter: blur(3px);
+}
+
+#cursor-orb.visible {
+  opacity: 1;
+}
