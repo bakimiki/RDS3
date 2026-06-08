@@ -80,7 +80,7 @@
       to   { transform: translate(var(--dx1), var(--dy1)); }
     }
 
-    /* ── HERO (blurred car) ── */
+    /* ── HERO ── */
     #hero {
       width: 100%;
       height: 100vh;
@@ -115,7 +115,6 @@
       position: relative;
     }
 
-    /* sticky container that pins while we scroll through images */
     #sticky-container {
       position: sticky;
       top: 0;
@@ -126,7 +125,6 @@
       justify-content: center;
     }
 
-    /* the big featured image */
     #featured-wrap {
       position: absolute;
       inset: 0;
@@ -149,7 +147,6 @@
       opacity: 0.85;
     }
 
-    /* grid strip at bottom */
     #grid-strip {
       position: absolute;
       bottom: 0;
@@ -184,7 +181,6 @@
       mix-blend-mode: multiply;
     }
 
-    /* spacer divs that create scroll height */
     .scroll-spacer {
       height: 100vh;
     }
@@ -292,7 +288,7 @@
       position: fixed;
       top: 50%;
       right: 32px;
-      transform: translateY(-50%); 
+      transform: translateY(-50%);
       font-size: 14px;
       font-weight: 400;
       letter-spacing: 0.05em;
@@ -412,8 +408,7 @@
       pointer-events: none;
     }
 
-
-    /* ── GRAY CIRCLE at bottom like figma ── */
+    /* ── BOTTOM ORB ── */
     #bottom-orb {
       width: 100%;
       display: flex;
@@ -446,7 +441,6 @@
     #cursor-orb.visible {
       opacity: 1;
     }
-    
   </style>
 </head>
 <body>
@@ -530,7 +524,7 @@ const SHEET_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS_OH9hvOpRMT
 
 function getImageURL(row) {
   const id = (row.ImageID || '').trim();
-  if (id) return `https://lh3.googleusercontent.com/d/${id}`;
+  if (id) return `https://drive.google.com/thumbnail?id=${id}&sz=w800`;
   return `https://placehold.co/400x300/e8e8e8/888?text=${encodeURIComponent(row.Superstition || 'Image')}`;
 }
 
@@ -665,7 +659,7 @@ function openDetail() {
   document.getElementById('d-control-cost').textContent = item['Control Cost'] || '';
   const detailId = (item.DetailImageID || '').trim();
   document.getElementById('detail-photo').src = detailId 
-    ? 'https://lh3.googleusercontent.com/d/' + detailId 
+    ? `https://drive.google.com/thumbnail?id=${detailId}&sz=w1200`
     : getImageURL(item);
  
   document.getElementById('detail-panel').classList.add('open');
@@ -675,11 +669,6 @@ function closeDetail() {
   document.getElementById('detail-panel').classList.remove('open');
 }
  
-// close on ESC
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') closeDetail();
-});
-
 // close on ESC
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') closeDetail();
