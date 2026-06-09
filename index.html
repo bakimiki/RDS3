@@ -455,6 +455,7 @@
 
     /* ── PRINT LAYOUT ── */
     @media print {
+      @import url('https://cdn.jsdelivr.net/npm/pretendard@latest/dist/web/static/pretendard.css');
       * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 
       /* hide everything */
@@ -481,18 +482,22 @@
 
       /* ref + title */
       .ps-ref {
-        font-size: 10px;
-        letter-spacing: 0.08em;
-        margin-bottom: 4px;
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        font-size: 64pt;
+        letter-spacing: 0.04em;
+        margin-bottom: 8px;
+        font-weight: 400;
         color: #000;
       }
 
       .ps-title {
-        font-size: 52px;
-        font-weight: 300;
-        letter-spacing: -0.02em;
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        font-size: 128pt;
+        font-weight: 400;
+        letter-spacing: 0;
         line-height: 0.9;
-        margin-bottom: 32px;
+        text-transform: lowercase;
+        margin-bottom: 200px;
         color: #000;
       }
 
@@ -500,8 +505,10 @@
       .ps-meta-row {
         display: flex;
         gap: 40px;
-        margin-bottom: 6px;
-        font-size: 11px;
+        margin-bottom: 12px;
+        font-size: 90pt;
+        font-family: 'Pretendard', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        letter-spacing: 0.02em;
       }
 
       .ps-meta-label {
