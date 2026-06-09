@@ -933,13 +933,6 @@ function printSite() {
   setTimeout(() => window.print(), 400);
 }
 
-document.addEventListener('keydown', function(e) {
-  if ((e.metaKey || e.ctrlKey) && e.key === 'p') {
-    e.preventDefault();
-    buildPrintSingle();
-    setTimeout(() => window.print(), 400);
-  }
-});
 
 </script>
 
