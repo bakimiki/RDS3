@@ -483,7 +483,7 @@
       /* ref + title */
       .ps-ref {
         font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-        font-size: 11px;
+        font-size: 24px;
         letter-spacing: 0.04em;
         margin-bottom: 4px;
         font-weight: 400;
@@ -492,8 +492,8 @@
 
       .ps-title {
         font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-        font-size: 64px;
-        font-weight: 300;
+        font-size: 50px;
+        font-weight: 400;
         letter-spacing: 0;
         line-height: 0.9;
         text-transform: lowercase;
@@ -506,7 +506,7 @@
         display: flex;
         gap: 40px;
         margin-bottom: 6px;
-        font-size: 11px;
+        font-size: 30px;
         font-family: 'Pretendard', 'Helvetica Neue', Helvetica, Arial, sans-serif;
         letter-spacing: 0.02em;
       }
@@ -520,30 +520,29 @@
       }
 
       .ps-meta-value {
-        font-weight: 300;
+        font-weight: 500;
         color: #000;
       }
 
-      /* image grid below */
+      /* single large image */
       .ps-image-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 0;
         margin-top: 40px;
+        width: 100%;
       }
 
       .ps-image-cell {
-        aspect-ratio: 1;
-        overflow: hidden;
+        width: 100%;
         position: relative;
+        overflow: hidden;
       }
 
       .ps-image-cell img {
         width: 100%;
-        height: 100%;
-        object-fit: cover;
+        height: auto;
+        object-fit: contain;
         filter: grayscale(100%) blur(2px) brightness(1.15);
         opacity: 0.8;
+        display: block;
       }
 
       .ps-image-cell::after {
@@ -551,6 +550,11 @@
         position: absolute;
         inset: 0;
         background: rgba(255,255,255,0.35);
+      }
+
+      /* hide all but first image */
+      .ps-image-cell:not(:first-child) {
+        display: none;
       }
 
       @page {
@@ -916,18 +920,12 @@ function buildPrintSingle() {
   if (!item) return;
 
   const refNum = String(currentIndex + 1).padStart(3, '0');
-  const otherItems = items.filter((_, i) => i !== currentIndex);
-  const gridItems = otherItems.slice(0, 6);
-
-  const gridHTML = gridItems.map(it => {
-    const src = getImageURL(it);
-    return '<div class="ps-image-cell"><img src="' + src + '" alt="" /></div>';
-  }).join('');
-
   const detailId = (item.DetailImageID || '').trim();
   const detailSrc = detailId
     ? 'https://lh3.googleusercontent.com/d/' + detailId
     : getImageURL(item);
+
+  const gridHTML = '<div class="ps-image-cell"><img src="' + detailSrc + '" alt="" /></div>';
 
   document.getElementById('print-single').innerHTML =
     '<div class="ps-header">' +
