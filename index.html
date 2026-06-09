@@ -928,10 +928,9 @@ function buildPrintSingle() {
     '</div>';
 }
 
-function printSite() {
+window.onbeforeprint = function() {
   buildPrintSingle();
-  setTimeout(() => window.print(), 400);
-}
+};
 
 </script>
 
