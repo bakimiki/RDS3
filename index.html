@@ -80,7 +80,7 @@
       to   { transform: translate(var(--dx1), var(--dy1)); }
     }
 
-    /* ── HERO ── */
+    /* ── HERO (blurred car) ── */
     #hero {
       width: 100%;
       height: 100vh;
@@ -115,6 +115,7 @@
       position: relative;
     }
 
+    /* sticky container that pins while we scroll through images */
     #sticky-container {
       position: sticky;
       top: 0;
@@ -125,6 +126,7 @@
       justify-content: center;
     }
 
+    /* the big featured image */
     #featured-wrap {
       position: absolute;
       inset: 0;
@@ -147,6 +149,7 @@
       opacity: 0.85;
     }
 
+    /* grid strip at bottom */
     #grid-strip {
       position: absolute;
       bottom: 0;
@@ -181,6 +184,7 @@
       mix-blend-mode: multiply;
     }
 
+    /* spacer divs that create scroll height */
     .scroll-spacer {
       height: 100vh;
     }
@@ -263,8 +267,10 @@
 
     #detail-photo {
       width: 100%;
-      height: auto;
-      object-fit: contain;
+      aspect-ratio: 4/3;
+      object-fit: cover;
+      margin-top: 16px;
+      filter: none;
     }
 
     .detail-text-block h4 {
@@ -286,9 +292,8 @@
 
     #close-btn {
       position: fixed;
-      top: 50%;
-      right: 32px;
-      transform: translateY(-50%);
+      top: 24px;
+      right: 180px;
       font-size: 14px;
       font-weight: 400;
       letter-spacing: 0.05em;
@@ -408,7 +413,8 @@
       pointer-events: none;
     }
 
-    /* ── BOTTOM ORB ── */
+
+    /* ── GRAY CIRCLE at bottom like figma ── */
     #bottom-orb {
       width: 100%;
       display: flex;
@@ -426,69 +432,145 @@
     /* ── CURSOR ORB ── */
     #cursor-orb {
       position: fixed;
-      width: 400px;
-      height: 400px;
+      width: 500px;
+      height: 500px;
       border-radius: 50%;
       pointer-events: none;
       z-index: 130;
       opacity: 0;
       transform: translate(-50%, -50%);
       transition: opacity 0.4s ease, left 0.05s linear, top 0.05s linear;
-      background: rgba(255, 255, 255, 1);
-      filter: blur(3px);
+      background: radial-gradient(circle, 
+        rgba(255,255,255,1) 0%, 
+        rgba(255,255,255,0.95) 20%, 
+        rgba(255,255,255,0.7) 45%, 
+        rgba(255,255,255,0.2) 70%, 
+        rgba(255,255,255,0) 100%);
+      filter: blur(22px);
     }
 
     #cursor-orb.visible {
       opacity: 1;
     }
 
-  
+    /* ── PRINT LAYOUT ── */
     @media print {
-   /* 각 이미지 위에 흰색 반투명 레이어 올리기 */
-   #featured-img,
-   .grid-thumb img,
-   #detail-photo {
-      filter: blur(2px) brightness(1.3);
-      opacity: 0.7;
+      * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+      /* hide everything */
+      body > *:not(#print-single) {
+        display: none !important;
+      }
+
+      #print-single {
+        display: block !important;
+        width: 100%;
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      }
+
+      /* header row */
+      .ps-header {
+        display: flex;
+        justify-content: space-between;
+        font-size: 9px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        margin-bottom: 24px;
+        color: #000;
+      }
+
+      /* ref + title */
+      .ps-ref {
+        font-size: 10px;
+        letter-spacing: 0.08em;
+        margin-bottom: 4px;
+        color: #000;
+      }
+
+      .ps-title {
+        font-size: 52px;
+        font-weight: 300;
+        letter-spacing: -0.02em;
+        line-height: 0.9;
+        margin-bottom: 32px;
+        color: #000;
+      }
+
+      /* meta + text grid */
+      .ps-meta-row {
+        display: flex;
+        gap: 40px;
+        margin-bottom: 6px;
+        font-size: 11px;
+      }
+
+      .ps-meta-label {
+        font-weight: 500;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        min-width: 140px;
+        color: #000;
+      }
+
+      .ps-meta-value {
+        font-weight: 300;
+        color: #000;
+      }
+
+      /* image grid below */
+      .ps-image-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0;
+        margin-top: 40px;
+      }
+
+      .ps-image-cell {
+        aspect-ratio: 1;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .ps-image-cell img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter: grayscale(100%) blur(2px) brightness(1.15);
+        opacity: 0.8;
+      }
+
+      .ps-image-cell::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: rgba(255,255,255,0.35);
+      }
+
+      @page {
+        margin: 15mm;
+        size: A4 portrait;
+      }
     }
 
-  /* 이미지 컨테이너에 흰 안개 오버레이 */
-  .grid-thumb {
-     position: relative;
-   }
-
-    .grid-thumb::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: rgba(255, 255, 255, 0.45);
-    }
-
-  /* 텍스트는 선명하게 */
-    body {
+    /* ── PRINT BUTTON ── */
+    #print-btn {
+      position: fixed;
+      bottom: 32px;
+      right: 32px;
+      z-index: 90;
+      background: none;
+      border: 1px solid #000;
+      padding: 8px 16px;
+      font-family: inherit;
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      cursor: pointer;
       color: #000;
-    background: #fff;
     }
-
-  /* 헤더 고정 해제 */
-    #header {
-     position: static;
-    }
-
-  /* 불필요한 UI 숨기기 */
-    #jinx-section,
-    #jinx-form,
-    #cursor-orb,
-    #scroll-bottom-btn {
-      display: none;
-    }
-
-  /* 페이지 여백 */
-    @page {
-      margin: 20mm;
-    }
-  }
-
+    #print-btn:hover { background: #000; color: #fff; }
+    #print-grid { display: none; }
   </style>
 </head>
 <body>
@@ -697,7 +779,7 @@ window.addEventListener('scroll', onScroll, { passive: true });
 function openDetail() {
   const item = items[currentIndex];
   if (!item) return;
- 
+
   document.getElementById('d-ref').textContent = String(currentIndex + 1).padStart(3, '0');
   document.getElementById('detail-title').textContent = item.Superstition || '';
   document.getElementById('d-category').textContent = item.Category || '';
@@ -709,14 +791,14 @@ function openDetail() {
   document.getElementById('detail-photo').src = detailId 
     ? 'https://lh3.googleusercontent.com/d/' + detailId 
     : getImageURL(item);
- 
+
   document.getElementById('detail-panel').classList.add('open');
 }
- 
+
 function closeDetail() {
   document.getElementById('detail-panel').classList.remove('open');
 }
- 
+
 // close on ESC
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') closeDetail();
@@ -807,6 +889,7 @@ init();
 // ── CURSOR ORB ──────────────────────────────────────────────────────
 const orb = document.getElementById('cursor-orb');
 
+// Use document-level listener, only activate over featured-img
 document.addEventListener('mousemove', (e) => {
   orb.style.left = e.clientX + 'px';
   orb.style.top = e.clientY + 'px';
@@ -820,6 +903,50 @@ document.addEventListener('mousemove', (e) => {
   }
 });
 
+// ── PRINT ──────────────────────────────────────────────────────
+function buildPrintSingle() {
+  const item = items[currentIndex];
+  if (!item) return;
+
+  const refNum = String(currentIndex + 1).padStart(3, '0');
+  const otherItems = items.filter((_, i) => i !== currentIndex);
+  const gridItems = otherItems.slice(0, 6);
+
+  const gridHTML = gridItems.map(it => {
+    const src = getImageURL(it);
+    return '<div class="ps-image-cell"><img src="' + src + '" alt="" /></div>';
+  }).join('');
+
+  const detailId = (item.DetailImageID || '').trim();
+  const detailSrc = detailId
+    ? 'https://lh3.googleusercontent.com/d/' + detailId
+    : getImageURL(item);
+
+  document.getElementById('print-single').innerHTML =
+    '<div class="ps-header">' +
+      '<span>BEYOND THE FOG</span>' +
+    '</div>' +
+    '<div class="ps-ref">REF: ' + refNum + '</div>' +
+    '<div class="ps-title">' + (item.Superstition || '') + '</div>' +
+    '<div class="ps-meta-row"><span class="ps-meta-label">CATEGORY</span><span class="ps-meta-value">' + (item.Category || '') + '</span></div>' +
+    '<div class="ps-meta-row"><span class="ps-meta-label">REGION</span><span class="ps-meta-value">' + (item.Region || '') + '</span></div>' +
+    '<div class="ps-meta-row"><span class="ps-meta-label">CLASSIFICATION</span><span class="ps-meta-value">' + (item.Classification || '') + '</span></div>' +
+    '<div class="ps-meta-row"><span class="ps-meta-label">ACTION LOG</span><span class="ps-meta-value">' + (item['Action Log'] || '') + '</span></div>' +
+    '<div class="ps-meta-row"><span class="ps-meta-label">CONTROL COST</span><span class="ps-meta-value">' + (item['Control Cost'] || '') + '</span></div>' +
+    '<div class="ps-image-grid">' + gridHTML + '</div>';
+}
+
+function printSite() {
+  buildPrintSingle();
+  setTimeout(() => window.print(), 400);
+}
+
 </script>
+
+<!-- PRINT SINGLE (current item) -->
+<div id="print-single" style="display:none"></div>
+<!-- PRINT BUTTON -->
+<button id="print-btn" onclick="printSite()">PRINT</button>
+
 </body>
 </html>
