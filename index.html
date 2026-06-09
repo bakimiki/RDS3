@@ -461,79 +461,94 @@
         display: none !important;
       }
 
+      /* outer wrapper: A4 page, relative so image can be absolute inside */
       #print-single {
         display: block !important;
-        width: 100%;
-        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
         position: relative;
+        width: 210mm;
+        min-height: 297mm;
+        overflow: hidden;
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        background: #fff;
       }
 
+      /* image fills entire page as background */
+      .ps-bg {
+        position: absolute;
+        top: 0; left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+      }
 
-      /* ref + title */
+      .ps-bg img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+        filter: grayscale(100%) blur(3px) brightness(1.15);
+        opacity: 0.7;
+        mix-blend-mode: multiply;
+      }
+
+      /* text sits on top of image */
+      .ps-text {
+        position: relative;
+        z-index: 2;
+        padding: 14mm 15mm 12mm;
+      }
+
+      /* ref */
       .ps-ref {
-        font-size: 20px;
+        font-size: 9pt;
         letter-spacing: 0.04em;
-        margin-bottom: 2px;
         font-weight: 400;
         color: #000;
+        margin-bottom: 2pt;
       }
 
+      /* superstition title */
       .ps-title {
-        font-size: 45px;
-        font-weight: 400;
+        font-size: 36pt;
+        font-weight: 300;
         letter-spacing: -0.01em;
-        line-height: 0.9;
+        line-height: 1;
         text-transform: lowercase;
-        margin-bottom: 40px;
         color: #000;
+        margin-bottom: 20pt;
       }
 
-      /* 2-col text block: fixed left col + right col */
+      /* 2-col grid — label fixed width, value fills rest */
       .ps-meta-grid {
         display: grid;
-        grid-template-columns: 200px 1fr;
+        grid-template-columns: 110pt 1fr;
         row-gap: 0;
-        margin-bottom: 24px;
+        column-gap: 0;
       }
 
       .ps-meta-label {
         font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-        font-size: 24px;
-        font-weight: 400;
-        letter-spacing: 0.04em;
+        font-size: 9pt;
+        font-weight: 500;
+        letter-spacing: 0.06em;
         text-transform: uppercase;
         color: #000;
-        padding: 3px 0;
-        line-height: 1.5;
+        line-height: 1.7;
+        padding-top: 0;
       }
 
       .ps-meta-value {
         font-family: 'Pretendard', 'Apple SD Gothic Neo', sans-serif;
-        font-size: 10px;
+        font-size: 9pt;
         font-weight: 400;
         color: #000;
-        padding: 3px 0;
-        line-height: 1.5;
+        line-height: 1.7;
         word-break: keep-all;
-      }
-
-      /* image below text, full width */
-      .ps-image-wrap {
-        width: 100%;
-        margin-top: 8px;
-      }
-
-      .ps-image-wrap img {
-        width: 100%;
-        height: auto;
-        display: block;
-        filter: grayscale(100%) blur(2px) brightness(1.1);
-        opacity: 0.85;
-        mix-blend-mode: multiply;
+        overflow-wrap: break-word;
       }
 
       @page {
-        margin: 12mm 15mm;
+        margin: 0;
         size: A4 portrait;
       }
     }
@@ -897,24 +912,19 @@ function buildPrintSingle() {
   const refNum = String(currentIndex + 1).padStart(3, '0');
   const imgSrc = getImageURL(item);
 
-  const now = new Date();
-  const dateStr = now.getFullYear() + '. ' + (now.getMonth()+1) + '. ' + now.getDate() + '.';
-
   document.getElementById('print-single').innerHTML =
-    '<div class="ps-top-bar">' +
-      '<span>BEYOND THE FOG</span>' +
-      '<span>' + dateStr + '</span>' +
-    '</div>' +
-    '<div class="ps-ref">REF: ' + refNum + '</div>' +
-    '<div class="ps-title">' + (item.Superstition || '') + '</div>' +
-    '<div class="ps-meta-grid">' +
-      '<div class="ps-meta-label">CATEGORY</div><div class="ps-meta-value">' + (item.Category || '') + '</div>' +
-      '<div class="ps-meta-label">REGION</div><div class="ps-meta-value">' + (item.Region || '') + '</div>' +
-      '<div class="ps-meta-label">CLASSIFICATION</div><div class="ps-meta-value">' + (item.Classification || '') + '</div>' +
-      '<div class="ps-meta-label">ACTION LOG</div><div class="ps-meta-value">' + (item['Action Log'] || '') + '</div>' +
-      '<div class="ps-meta-label">CONTROL COST</div><div class="ps-meta-value">' + (item['Control Cost'] || '') + '</div>' +
-    '</div>' +
-    '<div class="ps-image-wrap"><img src="' + imgSrc + '" alt="" /></div>';
+    '<div class="ps-bg"><img src="' + imgSrc + '" alt="" /></div>' +
+    '<div class="ps-text">' +
+      '<div class="ps-ref">REF: ' + refNum + '</div>' +
+      '<div class="ps-title">' + (item.Superstition || '') + '</div>' +
+      '<div class="ps-meta-grid">' +
+        '<div class="ps-meta-label">CATEGORY</div><div class="ps-meta-value">' + (item.Category || '') + '</div>' +
+        '<div class="ps-meta-label">REGION</div><div class="ps-meta-value">' + (item.Region || '') + '</div>' +
+        '<div class="ps-meta-label">CLASSIFICATION</div><div class="ps-meta-value">' + (item.Classification || '') + '</div>' +
+        '<div class="ps-meta-label">ACTION LOG</div><div class="ps-meta-value">' + (item['Action Log'] || '') + '</div>' +
+        '<div class="ps-meta-label">CONTROL COST</div><div class="ps-meta-value">' + (item['Control Cost'] || '') + '</div>' +
+      '</div>' +
+    '</div>';
 }
 
 function printSite() {
