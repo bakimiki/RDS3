@@ -457,7 +457,6 @@
     @media print {
       * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 
-      /* hide everything except print-single */
       body > *:not(#print-single) {
         display: none !important;
       }
@@ -465,98 +464,86 @@
       #print-single {
         display: block !important;
         width: 100%;
-        height: 100vh;
-        position: relative;
         font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-        overflow: hidden;
-      }
-
-      /* bg image fills entire page behind everything */
-      .ps-bg-image {
-        position: absolute;
-        inset: 0;
-        z-index: 0;
-      }
-
-      .ps-bg-image img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        filter: grayscale(100%) blur(3px) brightness(1.1);
-        opacity: 0.75;
-        display: block;
-      }
-
-      /* fog overlay on top of image */
-      .ps-bg-image::after {
-        content: '';
-        position: absolute;
-        inset: 0;
-        background: rgba(255,255,255,0.3);
-      }
-
-      /* text content sits above image */
-      .ps-content {
         position: relative;
-        z-index: 2;
-        padding: 20mm 15mm;
-        height: 100%;
+      }
+
+      /* header bar: site name + date */
+      .ps-top-bar {
         display: flex;
-        flex-direction: column;
+        justify-content: space-between;
+        font-size: 8px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: #000;
+        margin-bottom: 16px;
       }
 
       /* ref + title */
       .ps-ref {
-        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-        font-size: 11px;
+        font-size: 10px;
         letter-spacing: 0.04em;
-        margin-bottom: 4px;
+        margin-bottom: 2px;
         font-weight: 400;
         color: #000;
       }
 
       .ps-title {
-        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-        font-size: 64px;
-        font-weight: 400;
-        letter-spacing: 0;
+        font-size: 52px;
+        font-weight: 300;
+        letter-spacing: -0.01em;
         line-height: 0.9;
         text-transform: lowercase;
-        margin-bottom: 40px;
+        margin-bottom: 28px;
         color: #000;
       }
 
-      /* 2-column grid: label | value */
+      /* 2-col text block: fixed left col + right col */
       .ps-meta-grid {
         display: grid;
-        grid-template-columns: 180px 1fr;
-        gap: 0;
-        flex: 1;
+        grid-template-columns: 160px 1fr;
+        row-gap: 0;
+        margin-bottom: 24px;
       }
 
       .ps-meta-label {
         font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-        font-size: 11px;
+        font-size: 10px;
         font-weight: 500;
         letter-spacing: 0.08em;
         text-transform: uppercase;
         color: #000;
-        padding: 5px 0;
-        align-self: start;
+        padding: 3px 0;
+        line-height: 1.5;
       }
 
       .ps-meta-value {
         font-family: 'Pretendard', 'Apple SD Gothic Neo', sans-serif;
-        font-size: 11px;
+        font-size: 10px;
         font-weight: 400;
         color: #000;
-        padding: 5px 0;
-        line-height: 1.6;
+        padding: 3px 0;
+        line-height: 1.5;
         word-break: keep-all;
       }
 
+      /* image below text, full width */
+      .ps-image-wrap {
+        width: 100%;
+        margin-top: 8px;
+      }
+
+      .ps-image-wrap img {
+        width: 100%;
+        height: auto;
+        display: block;
+        filter: grayscale(100%) blur(2px) brightness(1.1);
+        opacity: 0.85;
+        mix-blend-mode: multiply;
+      }
+
       @page {
-        margin: 0;
+        margin: 12mm 15mm;
         size: A4 portrait;
       }
     }
@@ -918,24 +905,26 @@ function buildPrintSingle() {
   if (!item) return;
 
   const refNum = String(currentIndex + 1).padStart(3, '0');
-  // use main ImageID (the foggy one shown on scroll)
-  const bgSrc = getImageURL(item);
+  const imgSrc = getImageURL(item);
+
+  const now = new Date();
+  const dateStr = now.getFullYear() + '. ' + (now.getMonth()+1) + '. ' + now.getDate() + '.';
 
   document.getElementById('print-single').innerHTML =
-    // full-page background image
-    '<div class="ps-bg-image"><img src="' + bgSrc + '" alt="" /></div>' +
-    // text content on top
-    '<div class="ps-content">' +
-      '<div class="ps-ref">REF: ' + refNum + '</div>' +
-      '<div class="ps-title">' + (item.Superstition || '') + '</div>' +
-      '<div class="ps-meta-grid">' +
-        '<div class="ps-meta-label">CATEGORY</div><div class="ps-meta-value">' + (item.Category || '') + '</div>' +
-        '<div class="ps-meta-label">REGION</div><div class="ps-meta-value">' + (item.Region || '') + '</div>' +
-        '<div class="ps-meta-label">CLASSIFICATION</div><div class="ps-meta-value">' + (item.Classification || '') + '</div>' +
-        '<div class="ps-meta-label">ACTION LOG</div><div class="ps-meta-value">' + (item['Action Log'] || '') + '</div>' +
-        '<div class="ps-meta-label">CONTROL COST</div><div class="ps-meta-value">' + (item['Control Cost'] || '') + '</div>' +
-      '</div>' +
-    '</div>';
+    '<div class="ps-top-bar">' +
+      '<span>BEYOND THE FOG</span>' +
+      '<span>' + dateStr + '</span>' +
+    '</div>' +
+    '<div class="ps-ref">REF: ' + refNum + '</div>' +
+    '<div class="ps-title">' + (item.Superstition || '') + '</div>' +
+    '<div class="ps-meta-grid">' +
+      '<div class="ps-meta-label">CATEGORY</div><div class="ps-meta-value">' + (item.Category || '') + '</div>' +
+      '<div class="ps-meta-label">REGION</div><div class="ps-meta-value">' + (item.Region || '') + '</div>' +
+      '<div class="ps-meta-label">CLASSIFICATION</div><div class="ps-meta-value">' + (item.Classification || '') + '</div>' +
+      '<div class="ps-meta-label">ACTION LOG</div><div class="ps-meta-value">' + (item['Action Log'] || '') + '</div>' +
+      '<div class="ps-meta-label">CONTROL COST</div><div class="ps-meta-value">' + (item['Control Cost'] || '') + '</div>' +
+    '</div>' +
+    '<div class="ps-image-wrap"><img src="' + imgSrc + '" alt="" /></div>';
 }
 
 function printSite() {
