@@ -319,36 +319,36 @@
       display: flex;
       flex-direction: column;
       align-items: center;
+      justify-content: center;
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.4s ease;
-      height: 60vh;
+      height: 300px;
       width: 20px;
     }
 
-    #detail-panel.open #reveal-slider-wrap {
+    #reveal-slider-wrap.open {
       opacity: 1;
       pointer-events: all;
     }
 
-    /* vertical slider via rotate — works in Safari */
-    #reveal-slider {
-      -webkit-appearance: slider-vertical;
-      appearance: slider-vertical;
-      writing-mode: vertical-lr;
-      direction: rtl;
-      width: 20px;
-      height: 100%;
-      outline: none;
-      cursor: pointer;
-      background: transparent;
-      padding: 0;
+    /* rotate horizontal slider 90deg to make it vertical — most reliable cross-browser */
+    #reveal-slider-outer {
+      width: 300px;
+      height: 20px;
+      transform: rotate(-90deg);
+      transform-origin: center center;
     }
 
-    /* webkit track */
-    #reveal-slider::-webkit-slider-runnable-track {
-      width: 1px;
+    #reveal-slider {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 1px;
       background: #bbb;
+      outline: none;
+      cursor: pointer;
+      border-radius: 0;
     }
 
     #reveal-slider::-webkit-slider-thumb {
@@ -359,12 +359,6 @@
       border-radius: 50%;
       background: #000;
       cursor: pointer;
-      margin-left: -4px;
-    }
-
-    #reveal-slider::-moz-range-track {
-      width: 1px;
-      background: #bbb;
     }
 
     #reveal-slider::-moz-range-thumb {
@@ -713,7 +707,9 @@
 
 <!-- VERTICAL REVEAL SLIDER -->
 <div id="reveal-slider-wrap">
-  <input type="range" id="reveal-slider" min="0" max="100" value="0" orient="vertical" />
+  <div id="reveal-slider-outer">
+    <input type="range" id="reveal-slider" min="0" max="100" value="0" />
+  </div>
 </div>
 
 
@@ -907,11 +903,13 @@ function openDetail() {
     : getImageURL(item);
 
   document.getElementById('detail-panel').classList.add('open');
+  document.getElementById('reveal-slider-wrap').classList.add('open');
   resetRevealSlider();
 }
 
 function closeDetail() {
   document.getElementById('detail-panel').classList.remove('open');
+  document.getElementById('reveal-slider-wrap').classList.remove('open');
   resetRevealSlider();
 }
 
