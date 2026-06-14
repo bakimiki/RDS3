@@ -167,7 +167,7 @@
       flex: 0 0 calc((100% - 3 * 24px - 64px) / 4);
       height: 100%;
       overflow: hidden;
-      opacity: 0.55;
+      opacity: 1;
       transition: opacity 0.3s;
       cursor: default;
     }
@@ -312,18 +312,18 @@
     /* ── VERTICAL REVEAL SLIDER ── */
     #reveal-slider-wrap {
       position: fixed;
-      right: 40px;
+      right: 48px;
       top: 50%;
       transform: translateY(-50%);
       z-index: 320;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 12px;
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.4s ease;
       height: 60vh;
+      width: 20px;
     }
 
     #detail-panel.open #reveal-slider-wrap {
@@ -331,17 +331,24 @@
       pointer-events: all;
     }
 
+    /* vertical slider via rotate — works in Safari */
     #reveal-slider {
-      -webkit-appearance: none;
-      appearance: none;
+      -webkit-appearance: slider-vertical;
+      appearance: slider-vertical;
       writing-mode: vertical-lr;
       direction: rtl;
-      width: 1px;
-      flex: 1;
-      background: #ccc;
+      width: 20px;
+      height: 100%;
       outline: none;
       cursor: pointer;
-      position: relative;
+      background: transparent;
+      padding: 0;
+    }
+
+    /* webkit track */
+    #reveal-slider::-webkit-slider-runnable-track {
+      width: 1px;
+      background: #bbb;
     }
 
     #reveal-slider::-webkit-slider-thumb {
@@ -352,6 +359,12 @@
       border-radius: 50%;
       background: #000;
       cursor: pointer;
+      margin-left: -4px;
+    }
+
+    #reveal-slider::-moz-range-track {
+      width: 1px;
+      background: #bbb;
     }
 
     #reveal-slider::-moz-range-thumb {
@@ -671,7 +684,37 @@
   <div id="bottom-orb-shape"></div>
 </div>
 
-<!-- DETAIL PANEL -->\n<div id="detail-panel">\n  <div id="detail-inner">\n    <!-- left: ref + title + photo -->\n    <div id="detail-left">\n      <div id="detail-ref">REF: <span id="d-ref"></span></div>\n      <div id="detail-title"></div>\n      <img id="detail-photo" src="" alt="" />\n    </div>\n    <!-- right: meta + text blocks equally spaced -->\n    <div id="detail-right">\n      <div>\n        <div class="detail-meta-row meta-reveal" id="meta-category"><span class="label">CATEGORY</span><span id="d-category"></span></div>\n        <div class="detail-meta-row meta-reveal" id="meta-region"><span class="label">REGION</span><span id="d-region"></span></div>\n        <div class="detail-meta-row meta-reveal" id="meta-classification"><span class="label">CLASSIFICATION</span><span id="d-classification"></span></div>\n      </div>\n      <div class="detail-text-block meta-reveal" id="meta-action">\n        <h4>ACTION LOG</h4>\n        <p id="d-action-log"></p>\n      </div>\n      <div class="detail-text-block meta-reveal" id="meta-cost">\n        <h4>CONTROL COST</h4>\n        <p id="d-control-cost"></p>\n      </div>\n    </div>\n  </div>\n  <button id="close-btn" onclick="closeDetail()">&lt;&lt;</button>\n</div>\n\n<!-- VERTICAL REVEAL SLIDER -->\n<div id="reveal-slider-wrap">\n  <input type="range" id="reveal-slider" min="0" max="100" value="0"\n         orient="vertical" />\n</div>
+<!-- DETAIL PANEL -->
+<div id="detail-panel">
+  <div id="detail-inner">
+    <div id="detail-left">
+      <div id="detail-ref">REF: <span id="d-ref"></span></div>
+      <div id="detail-title"></div>
+      <img id="detail-photo" src="" alt="" />
+    </div>
+    <div id="detail-right">
+      <div>
+        <div class="detail-meta-row meta-reveal" id="meta-category"><span class="label">CATEGORY</span><span id="d-category"></span></div>
+        <div class="detail-meta-row meta-reveal" id="meta-region"><span class="label">REGION</span><span id="d-region"></span></div>
+        <div class="detail-meta-row meta-reveal" id="meta-classification"><span class="label">CLASSIFICATION</span><span id="d-classification"></span></div>
+      </div>
+      <div class="detail-text-block meta-reveal" id="meta-action">
+        <h4>ACTION LOG</h4>
+        <p id="d-action-log"></p>
+      </div>
+      <div class="detail-text-block meta-reveal" id="meta-cost">
+        <h4>CONTROL COST</h4>
+        <p id="d-control-cost"></p>
+      </div>
+    </div>
+  </div>
+  <button id="close-btn" onclick="closeDetail()">&lt;&lt;</button>
+</div>
+
+<!-- VERTICAL REVEAL SLIDER -->
+<div id="reveal-slider-wrap">
+  <input type="range" id="reveal-slider" min="0" max="100" value="0" orient="vertical" />
+</div>
 
 
 <!-- JINX SECTION (bottom of page) -->
