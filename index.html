@@ -133,7 +133,6 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding-bottom: 15vh;
     }
 
     #featured-img {
@@ -313,16 +312,16 @@
     /* ── VERTICAL REVEAL SLIDER ── */
     #reveal-slider-wrap {
       position: fixed;
-      right: -100px;
+      right: 40px;
       top: 50%;
       transform: translateY(-50%);
       z-index: 320;
       height: 500px;
       width: 500px;
-      overflow: visible;
       display: flex;
       align-items: center;
       justify-content: center;
+      overflow: visible;
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.4s ease;
@@ -375,6 +374,133 @@
     }
     .meta-reveal.visible {
       opacity: 1;
+    }
+
+
+    /* ── JINX SIDE PANEL ── */
+    #jinx-toggle {
+      position: fixed;
+      right: 32px;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 400;
+      background: none;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      padding: 8px;
+    }
+
+    #jinx-toggle span {
+      display: block;
+      width: 22px;
+      height: 1px;
+      background: #000;
+      transition: all 0.3s ease;
+    }
+
+    #jinx-toggle.open span:nth-child(1) { transform: rotate(45deg) translate(4px, 4px); }
+    #jinx-toggle.open span:nth-child(2) { opacity: 0; }
+    #jinx-toggle.open span:nth-child(3) { transform: rotate(-45deg) translate(4px, -4px); }
+
+    #jinx-side-panel {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 33.33vw;
+      height: 100vh;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      z-index: 350;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 60px 48px;
+      transform: translateX(100%);
+      transition: transform 0.4s ease;
+      border-left: 1px solid #e0e0e0;
+    }
+
+    #jinx-side-panel.open {
+      transform: translateX(0);
+    }
+
+    #jinx-side-panel .panel-label {
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #888;
+      margin-bottom: 8px;
+    }
+
+    #jinx-side-panel .panel-sub {
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      color: #aaa;
+      margin-bottom: 48px;
+    }
+
+    #jinx-side-form {
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid #000;
+      width: 100%;
+      padding: 12px 0;
+    }
+
+    #jinx-side-input {
+      background: transparent;
+      border: none;
+      outline: none;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 300;
+      letter-spacing: 0.06em;
+      color: #000;
+      width: 100%;
+      text-transform: uppercase;
+    }
+
+    #jinx-side-input::placeholder { color: #aaa; }
+
+    #jinx-side-submit {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 13px;
+      color: #000;
+      padding-left: 16px;
+      flex-shrink: 0;
+    }
+
+    /* layout shift when panel opens */
+    body.jinx-open #featured-img {
+      max-width: 36vw;
+      transform: translateX(-8vw);
+      transition: all 0.4s ease;
+    }
+
+    body.jinx-open #featured-wrap {
+      justify-content: flex-start;
+      padding-left: 8vw;
+    }
+
+    body.jinx-open #grid-strip {
+      width: 66.66vw;
+      transition: width 0.4s ease;
+    }
+
+    body.jinx-open #header {
+      width: 66.66vw;
+      transition: width 0.4s ease;
+    }
+
+    body.jinx-open #jinx-toggle {
+      right: calc(33.33vw + 24px);
     }
 
     /* ── JINX SECTION ── */
@@ -711,6 +837,24 @@
   </div>
 </div>
 
+<!-- HAMBURGER TOGGLE -->
+<button id="jinx-toggle" onclick="toggleJinxPanel()">
+  <span></span>
+  <span></span>
+  <span></span>
+</button>
+
+<!-- JINX SIDE PANEL -->
+<div id="jinx-side-panel">
+  <div class="panel-label">Add Your Jinx</div>
+  <div class="panel-sub">Every Jinx added deepens the fog</div>
+  <div id="jinx-side-form">
+    <input id="jinx-side-input" type="text" placeholder="TYPE YOUR JINX HERE" maxlength="60" />
+    <button id="jinx-side-submit" onclick="addJinxFromPanel()">→</button>
+  </div>
+</div>
+
+
 <!-- JINX SECTION (bottom of page) -->
 <section id="jinx-section">
   <div id="jinx-bg-orb"></div>
@@ -808,9 +952,10 @@ function buildScrollSection() {
 function updateGridStrip(idx) {
   const strip = document.getElementById('grid-strip');
   strip.innerHTML = '';
-  // show 4 surrounding images
+  const count = jinxPanelOpen ? 3 : 4;
+  // show 3 or 4 surrounding images
   const start = Math.max(0, idx - 1);
-  const end = Math.min(items.length, start + 4);
+  const end = Math.min(items.length, start + count);
   for (let i = start; i < end; i++) {
     const div = document.createElement('div');
     div.className = 'grid-thumb' + (i === idx ? ' active' : '');
@@ -1015,6 +1160,40 @@ function closeRevealSlider() {
   document.getElementById('reveal-slider-wrap').classList.remove('open');
   revealSlider.value = 0;
 }
+
+
+// ── JINX SIDE PANEL ──────────────────────────────────────────────────
+let jinxPanelOpen = false;
+
+function toggleJinxPanel() {
+  jinxPanelOpen = !jinxPanelOpen;
+  document.getElementById('jinx-toggle').classList.toggle('open', jinxPanelOpen);
+  document.getElementById('jinx-side-panel').classList.toggle('open', jinxPanelOpen);
+  document.body.classList.toggle('jinx-open', jinxPanelOpen);
+
+  // rebuild grid strip with 3 or 4 thumbs
+  updateGridStrip(currentIndex);
+}
+
+function addJinxFromPanel() {
+  const input = document.getElementById('jinx-side-input');
+  const val = input.value.trim();
+  if (!val) return;
+  const jinxes = loadJinxes();
+  jinxes.push(val);
+  saveJinxes(jinxes);
+  spawnFloatingText(val);
+  input.value = '';
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const sideInput = document.getElementById('jinx-side-input');
+  if (sideInput) {
+    sideInput.addEventListener('keydown', e => {
+      if (e.key === 'Enter') addJinxFromPanel();
+    });
+  }
+});
 
 
 // ── PRINT ──────────────────────────────────────────────────────
