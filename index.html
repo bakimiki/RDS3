@@ -141,7 +141,7 @@
       object-fit: contain;
       cursor: pointer;
       transition: opacity 0.35s ease;
-      filter: grayscale(100%);
+      filter: grayscale(100%) blur(18px) contrast(1.1);
       mix-blend-mode: multiply;
     }
 
@@ -179,7 +179,7 @@
     .grid-thumb img {
       width: 100%;
       height: 100%;
-      object-fit: cover;
+      object-fit: contain;
       filter: grayscale(100%);
       mix-blend-mode: multiply;
     }
@@ -265,14 +265,6 @@
       min-width: 110px;
     }
 
-    #detail-photo {
-      width: 100%;
-      aspect-ratio: 4/3;
-      object-fit: cover;
-      margin-top: 16px;
-      filter: none;
-    }
-
     .detail-text-block h4 {
       font-size: 11px;
       font-weight: 500;
@@ -292,8 +284,8 @@
 
     #close-btn {
       position: fixed;
-      top: 24px;
-      right: 180px;
+      bottom: 32px;
+      right: 32px;
       font-size: 14px;
       font-weight: 400;
       letter-spacing: 0.05em;
@@ -306,6 +298,72 @@
 
     #close-btn:hover {
       opacity: 0.5;
+    }
+
+    /* ── BLUR SLIDER ── */
+    #blur-slider-wrap {
+      position: fixed;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 320;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+    }
+
+    #detail-panel.open #blur-slider-wrap {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    #blur-slider-label {
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #000;
+      white-space: nowrap;
+    }
+
+    #blur-slider {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 220px;
+      height: 1px;
+      background: #000;
+      outline: none;
+      cursor: pointer;
+    }
+
+    #blur-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #000;
+      cursor: pointer;
+    }
+
+    #blur-slider::-moz-range-thumb {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #000;
+      cursor: pointer;
+      border: none;
+    }
+
+    #detail-photo {
+      width: 100%;
+      aspect-ratio: 4/3;
+      object-fit: cover;
+      margin-top: 16px;
+      filter: none;
+      transition: filter 0.15s ease;
     }
 
     /* ── JINX SECTION ── */
@@ -635,6 +693,13 @@
   <button id="close-btn" onclick="closeDetail()">&lt;&lt;</button>
 </div>
 
+<!-- BLUR SLIDER (fixed, shown when detail panel open) -->
+<div id="blur-slider-wrap">
+  <span id="blur-slider-label">FOG</span>
+  <input type="range" id="blur-slider" min="0" max="100" value="100" />
+  <span id="blur-slider-label">CLEAR</span>
+</div>
+
 <!-- JINX SECTION (bottom of page) -->
 <section id="jinx-section">
   <div id="jinx-bg-orb"></div>
@@ -777,6 +842,25 @@ function onScroll() {
 
 window.addEventListener('scroll', onScroll, { passive: true });
 
+// ── BLUR SLIDER ──────────────────────────────────────────────────────
+const blurSlider = document.getElementById('blur-slider');
+
+blurSlider.addEventListener('input', () => {
+  const val = blurSlider.value; // 0 = FOG, 100 = CLEAR
+  const blurAmount = (1 - val / 100) * 28; // 28px → 0px
+  const opacityVal = 0.4 + (val / 100) * 0.6; // 0.4 → 1.0
+  const photo = document.getElementById('detail-photo');
+  photo.style.filter = `blur(${blurAmount}px) grayscale(${(1 - val/100) * 100}%)`;
+  photo.style.opacity = opacityVal;
+});
+
+function resetBlurSlider() {
+  blurSlider.value = 100;
+  const photo = document.getElementById('detail-photo');
+  photo.style.filter = 'none';
+  photo.style.opacity = '1';
+}
+
 // ── DETAIL PANEL ──────────────────────────────────────────────────────
 function openDetail() {
   const item = items[currentIndex];
@@ -795,10 +879,16 @@ function openDetail() {
     : getImageURL(item);
 
   document.getElementById('detail-panel').classList.add('open');
+  // reset slider to FOG state
+  blurSlider.value = 0;
+  const photo = document.getElementById('detail-photo');
+  photo.style.filter = 'blur(28px) grayscale(100%)';
+  photo.style.opacity = '0.4';
 }
 
 function closeDetail() {
   document.getElementById('detail-panel').classList.remove('open');
+  resetBlurSlider();
 }
 
 // close on ESC
