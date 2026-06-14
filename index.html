@@ -1019,20 +1019,7 @@ function saveJinxes(arr) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(arr));
 }
 
-function addJinx() {
-  const input = document.getElementById('jinx-input');
-  const val = input.value.trim();
-  if (!val) return;
-  const jinxes = loadJinxes();
-  jinxes.push(val);
-  saveJinxes(jinxes);
-  spawnFloatingText(val);
-  input.value = '';
-}
 
-document.getElementById('jinx-input').addEventListener('keydown', e => {
-  if (e.key === 'Enter') addJinx();
-});
 
 function spawnFloatingText(text) {
   const layer = document.getElementById('floating-layer');
@@ -1072,7 +1059,7 @@ function initFloatingTexts() {
 // ── INIT ──────────────────────────────────────────────────────────────
 async function init() {
   try {
-    const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 5000));
+    const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 2000));
     items = await Promise.race([fetchSheet(), timeout]);
   } catch (e) {
     console.warn('Sheet fetch failed:', e);
