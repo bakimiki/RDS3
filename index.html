@@ -294,7 +294,7 @@
       position: fixed;
       bottom: 32px;
       right: 32px;
-      font-size: 14px;
+      font-size: 22px;
       font-weight: 400;
       letter-spacing: 0.05em;
       cursor: pointer;
@@ -306,6 +306,72 @@
 
     #close-btn:hover {
       opacity: 0.5;
+    }
+
+
+    /* ── VERTICAL REVEAL SLIDER ── */
+    #reveal-slider-wrap {
+      position: fixed;
+      right: 48px;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 320;
+      height: 300px;
+      width: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+    }
+
+    #reveal-slider-wrap.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    #reveal-slider-outer {
+      width: 300px;
+      height: 20px;
+      transform: rotate(-90deg);
+    }
+
+    #reveal-slider {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 1px;
+      background: #bbb;
+      outline: none;
+      cursor: pointer;
+    }
+
+    #reveal-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #000;
+      cursor: pointer;
+    }
+
+    #reveal-slider::-moz-range-thumb {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #000;
+      border: none;
+      cursor: pointer;
+    }
+
+    /* ── META REVEAL ── */
+    .meta-reveal {
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+    .meta-reveal.visible {
+      opacity: 1;
     }
 
     /* ── JINX SECTION ── */
@@ -618,21 +684,28 @@
     <!-- right: meta + text blocks equally spaced -->
     <div id="detail-right">
       <div>
-        <div class="detail-meta-row"><span class="label">CATEGORY</span><span id="d-category"></span></div>
-        <div class="detail-meta-row"><span class="label">REGION</span><span id="d-region"></span></div>
-        <div class="detail-meta-row"><span class="label">CLASSIFICATION</span><span id="d-classification"></span></div>
+        <div class="detail-meta-row meta-reveal" id="meta-category"><span class="label">CATEGORY</span><span id="d-category"></span></div>
+        <div class="detail-meta-row meta-reveal" id="meta-region"><span class="label">REGION</span><span id="d-region"></span></div>
+        <div class="detail-meta-row meta-reveal" id="meta-classification"><span class="label">CLASSIFICATION</span><span id="d-classification"></span></div>
       </div>
-      <div class="detail-text-block">
+      <div class="detail-text-block meta-reveal" id="meta-action">
         <h4>ACTION LOG</h4>
         <p id="d-action-log"></p>
       </div>
-      <div class="detail-text-block">
+      <div class="detail-text-block meta-reveal" id="meta-cost">
         <h4>CONTROL COST</h4>
         <p id="d-control-cost"></p>
       </div>
     </div>
   </div>
   <button id="close-btn" onclick="closeDetail()">&lt;&lt;</button>
+</div>
+
+<!-- VERTICAL REVEAL SLIDER -->
+<div id="reveal-slider-wrap">
+  <div id="reveal-slider-outer">
+    <input type="range" id="reveal-slider" min="0" max="100" value="0" />
+  </div>
 </div>
 
 <!-- JINX SECTION (bottom of page) -->
@@ -795,10 +868,12 @@ function openDetail() {
     : getImageURL(item);
 
   document.getElementById('detail-panel').classList.add('open');
+  openRevealSlider();
 }
 
 function closeDetail() {
   document.getElementById('detail-panel').classList.remove('open');
+  closeRevealSlider();
 }
 
 // close on ESC
@@ -904,6 +979,40 @@ document.addEventListener('mousemove', (e) => {
     orb.classList.toggle('visible', inside);
   }
 });
+
+// ── VERTICAL REVEAL SLIDER ───────────────────────────────────────────
+const revealSlider = document.getElementById('reveal-slider');
+
+const metaThresholds = [
+  { id: 'meta-category',       threshold: 20 },
+  { id: 'meta-region',         threshold: 40 },
+  { id: 'meta-classification', threshold: 60 },
+  { id: 'meta-action',         threshold: 75 },
+  { id: 'meta-cost',           threshold: 90 },
+];
+
+function updateMetaReveal(val) {
+  metaThresholds.forEach(({ id, threshold }) => {
+    const el = document.getElementById(id);
+    if (el) el.classList.toggle('visible', val >= threshold);
+  });
+}
+
+revealSlider.addEventListener('input', () => {
+  updateMetaReveal(Number(revealSlider.value));
+});
+
+function openRevealSlider() {
+  document.getElementById('reveal-slider-wrap').classList.add('open');
+  revealSlider.value = 0;
+  updateMetaReveal(0);
+}
+
+function closeRevealSlider() {
+  document.getElementById('reveal-slider-wrap').classList.remove('open');
+  revealSlider.value = 0;
+}
+
 
 // ── PRINT ──────────────────────────────────────────────────────
 function buildPrintSingle() {
