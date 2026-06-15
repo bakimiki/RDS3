@@ -1224,41 +1224,42 @@ document.addEventListener('DOMContentLoaded', () => {
 // ── PRINT ──────────────────────────────────────────────────────
 function buildPrintAll() {
   const container = document.getElementById('print-all');
-  const item = items[currentIndex];
-  if (!item) return;
+  let html = '';
 
-  const refNum = String(currentIndex + 1).padStart(3, '0');
-  const fogSrc = getImageURL(item);
-  const detailSrc = getDetailImageURL(item);
+  items.forEach((item, i) => {
+    const refNum = String(i + 1).padStart(3, '0');
+    const fogSrc = getImageURL(item);
+    const detailSrc = getDetailImageURL(item);
 
-  // PAGE 1: blur (트레이싱지용)
-  let html = '<div class="print-page print-page-fog">' +
-    '<div class="ps-bg"><img src="' + fogSrc + '" alt="" /></div>' +
-  '</div>';
+    // PAGE 1: blur (트레이싱지용)
+    html += '<div class="print-page print-page-fog">' +
+      '<div class="ps-bg"><img src="' + fogSrc + '" alt="" /></div>' +
+    '</div>';
 
-  // PAGE 2: 메타데이터 + 원본 이미지 (모조지용)
-  html += '<div class="print-page print-page-detail">' +
-    '<div class="pd-header">' +
-      '<div class="pd-ref">REF: ' + refNum + '</div>' +
-      '<div class="pd-title">' + (item.Superstition || '') + '</div>' +
-    '</div>' +
-    '<div class="pd-meta-list">' +
-      '<div class="pd-meta-item"><span class="pd-meta-label">CATEGORY</span><span class="pd-meta-value">' + (item.Category || '') + '</span></div>' +
-      '<div class="pd-meta-item"><span class="pd-meta-label">REGION</span><span class="pd-meta-value">' + (item.Region || '') + '</span></div>' +
-      '<div class="pd-meta-item"><span class="pd-meta-label">CLASSIFICATION</span><span class="pd-meta-value">' + (item.Classification || '') + '</span></div>' +
-      '<div class="pd-meta-item"><span class="pd-meta-label">ACTION LOG</span><span class="pd-meta-value">' + (item['Action Log'] || '') + '</span></div>' +
-      '<div class="pd-meta-item"><span class="pd-meta-label">CONTROL COST</span><span class="pd-meta-value">' + (item['Control Cost'] || '') + '</span></div>' +
-    '</div>' +
-    '<div class="pd-photo-wrap"><img class="pd-photo" src="' + detailSrc + '" alt="" /></div>' +
-    '<div class="pd-tagline">Superstition is the fog that<br>clouds your mind.</div>' +
-  '</div>';
+    // PAGE 2: 메타데이터 + 원본 이미지 (모조지용)
+    html += '<div class="print-page print-page-detail">' +
+      '<div class="pd-header">' +
+        '<div class="pd-ref">REF: ' + refNum + '</div>' +
+        '<div class="pd-title">' + (item.Superstition || '') + '</div>' +
+      '</div>' +
+      '<div class="pd-meta-list">' +
+        '<div class="pd-meta-item"><span class="pd-meta-label">CATEGORY</span><span class="pd-meta-value">' + (item.Category || '') + '</span></div>' +
+        '<div class="pd-meta-item"><span class="pd-meta-label">REGION</span><span class="pd-meta-value">' + (item.Region || '') + '</span></div>' +
+        '<div class="pd-meta-item"><span class="pd-meta-label">CLASSIFICATION</span><span class="pd-meta-value">' + (item.Classification || '') + '</span></div>' +
+        '<div class="pd-meta-item"><span class="pd-meta-label">ACTION LOG</span><span class="pd-meta-value">' + (item['Action Log'] || '') + '</span></div>' +
+        '<div class="pd-meta-item"><span class="pd-meta-label">CONTROL COST</span><span class="pd-meta-value">' + (item['Control Cost'] || '') + '</span></div>' +
+      '</div>' +
+      '<div class="pd-photo-wrap"><img class="pd-photo" src="' + detailSrc + '" alt="" /></div>' +
+      '<div class="pd-tagline">Superstition is the fog that<br>clouds your mind.</div>' +
+    '</div>';
+  });
 
   container.innerHTML = html;
 }
 
 function printSite() {
   buildPrintAll();
-  setTimeout(() => window.print(), 600);
+  setTimeout(() => window.print(), 1500);
 }
 
 
