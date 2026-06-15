@@ -892,6 +892,12 @@ function getImageURL(row) {
   return `https://placehold.co/400x300/e8e8e8/888?text=${encodeURIComponent(row.Superstition || 'Image')}`;
 }
 
+function getDetailImageURL(row) {
+  const id = (row.DetailImageID || '').trim();
+  if (id) return `https://lh3.googleusercontent.com/d/${id}`;
+  return getImageURL(row);
+}
+
 // ── DATA ─────────────────────────────────────────────────────────────
 let items = [];
 let currentIndex = 0;
