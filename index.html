@@ -658,95 +658,117 @@
     @media print {
       * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 
-      body > *:not(#print-single) {
-        display: none !important;
-      }
+      body > *:not(#print-all) { display: none !important; }
+      #print-all { display: block !important; }
 
-      /* outer wrapper: A4 page, relative so image can be absolute inside */
-      #print-single {
-        display: block !important;
-        position: relative;
+      .print-page {
         width: 210mm;
-        min-height: 297mm;
+        height: 297mm;
         overflow: hidden;
-        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        position: relative;
+        page-break-after: always;
         background: #fff;
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
       }
 
-      /* image fills entire page as background */
-      .ps-bg {
+      /* PAGE 1: blur 이미지 전체 (트레이싱지용) */
+      .print-page-fog .ps-bg {
         position: absolute;
         top: 0; left: 0;
-        width: 100%;
-        height: 100%;
-        z-index: 0;
+        width: 100%; height: 100%;
       }
 
-      .ps-bg img {
-        width: 100%;
-        height: 100%;
+      .print-page-fog .ps-bg img {
+        width: 100%; height: 100%;
         object-fit: cover;
         display: block;
-        filter: grayscale(100%) blur(3px) brightness(1.15);
-        opacity: 0.7;
+        filter: grayscale(100%) blur(18px) brightness(1.1);
+        opacity: 0.65;
         mix-blend-mode: multiply;
       }
 
-      /* text sits on top of image */
-      .ps-text {
+      /* PAGE 2: 메타데이터 (모조지용) */
+      .print-page-detail {
+        display: flex;
+        flex-direction: column;
+        padding: 12mm 12mm 8mm;
+        box-sizing: border-box;
+        height: 297mm;
         position: relative;
-        z-index: 2;
-        padding: 10mm 8mm 10mm;
       }
 
-      /* ref */
-      .ps-ref {
-        font-size: 14pt;
-        letter-spacing: 0.04em;
-        font-weight: 400;
+      .pd-header { margin-bottom: 8mm; }
+
+      .pd-ref {
+        font-size: 9pt;
+        letter-spacing: 0.08em;
         color: #000;
-        margin-bottom: 1.3pt;
+        margin-bottom: 2mm;
       }
 
-      /* superstition title */
-      .ps-title {
+      .pd-title {
         font-size: 40pt;
         font-weight: 400;
         letter-spacing: -0.01em;
         line-height: 1;
         text-transform: lowercase;
         color: #000;
-        margin-bottom: 22pt;
       }
 
-      /* 2-col grid — label fixed width, value fills rest */
-      .ps-meta-grid {
-        display: grid;
-        grid-template-columns: 165pt 1fr;
-        row-gap: 0;
-        column-gap: 12pt;
+      .pd-meta-list {
+        display: flex;
+        flex-direction: column;
+        gap: 4mm;
+        margin-bottom: 8mm;
       }
 
-      .ps-meta-label {
-        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-        font-size: 18pt;
+      .pd-meta-label {
+        font-size: 7pt;
         font-weight: 400;
-        letter-spacing: 0em;
+        letter-spacing: 0.12em;
         text-transform: uppercase;
         color: #000;
-        line-height: 1.35;
-        white-space: nowrap;
-        overflow: visible;
+        line-height: 1.3;
+        display: block;
       }
 
-      .ps-meta-value {
-        font-family: 'Pretendard', 'Apple SD Gothic Neo', sans-serif;
-        font-size: 18pt;
+      .pd-meta-value {
+        font-size: 9pt;
         font-weight: 400;
         color: #000;
-        line-height: 1.35;
+        line-height: 1.4;
         word-break: keep-all;
         overflow-wrap: break-word;
+        display: block;
+      }
+
+      .pd-photo-wrap {
+        position: absolute;
+        right: 12mm;
+        bottom: 20mm;
+        width: 115mm;
+        height: 130mm;
+      }
+
+      .pd-photo {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        display: block;
+        filter: grayscale(100%);
+      }
+
+      .pd-tagline {
+        position: absolute;
+        bottom: 10mm;
+        left: 0;
+        width: 100%;
+        text-align: center;
+        font-size: 8pt;
+        font-weight: 300;
+        color: #888;
+        letter-spacing: 0.02em;
+        line-height: 1.5;
       }
 
       @page {
@@ -1177,38 +1199,51 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 // ── PRINT ──────────────────────────────────────────────────────
-function buildPrintSingle() {
-  const item = items[currentIndex];
-  if (!item) return;
+function buildPrintAll() {
+  const container = document.getElementById('print-all');
+  let html = '';
 
-  const refNum = String(currentIndex + 1).padStart(3, '0');
-  const imgSrc = getImageURL(item);
+  items.forEach((item, i) => {
+    const refNum = String(i + 1).padStart(3, '0');
+    const fogSrc = getImageURL(item);
+    const detailSrc = getDetailImageURL(item);
 
-  document.getElementById('print-single').innerHTML =
-    '<div class="ps-bg"><img src="' + imgSrc + '" alt="" /></div>' +
-    '<div class="ps-text">' +
-      '<div class="ps-ref">REF: ' + refNum + '</div>' +
-      '<div class="ps-title">' + (item.Superstition || '') + '</div>' +
-      '<div class="ps-meta-grid">' +
-        '<div class="ps-meta-label">CATEGORY</div><div class="ps-meta-value">' + (item.Category || '') + '</div>' +
-        '<div class="ps-meta-label">REGION</div><div class="ps-meta-value">' + (item.Region || '') + '</div>' +
-        '<div class="ps-meta-label">CLASSIFICATION</div><div class="ps-meta-value">' + (item.Classification || '') + '</div>' +
-        '<div class="ps-meta-label">ACTION LOG</div><div class="ps-meta-value">' + (item['Action Log'] || '') + '</div>' +
-        '<div class="ps-meta-label">CONTROL COST</div><div class="ps-meta-value">' + (item['Control Cost'] || '') + '</div>' +
-      '</div>' +
+    // PAGE 1: blur (트레이싱지용)
+    html += '<div class="print-page print-page-fog">' +
+      '<div class="ps-bg"><img src="' + fogSrc + '" alt="" /></div>' +
     '</div>';
+
+    // PAGE 2: 메타데이터 + 원본 이미지 (모조지용)
+    html += '<div class="print-page print-page-detail">' +
+      '<div class="pd-header">' +
+        '<div class="pd-ref">REF: ' + refNum + '</div>' +
+        '<div class="pd-title">' + (item.Superstition || '') + '</div>' +
+      '</div>' +
+      '<div class="pd-meta-list">' +
+        '<div class="pd-meta-item"><span class="pd-meta-label">CATEGORY</span><span class="pd-meta-value">' + (item.Category || '') + '</span></div>' +
+        '<div class="pd-meta-item"><span class="pd-meta-label">REGION</span><span class="pd-meta-value">' + (item.Region || '') + '</span></div>' +
+        '<div class="pd-meta-item"><span class="pd-meta-label">CLASSIFICATION</span><span class="pd-meta-value">' + (item.Classification || '') + '</span></div>' +
+        '<div class="pd-meta-item"><span class="pd-meta-label">ACTION LOG</span><span class="pd-meta-value">' + (item['Action Log'] || '') + '</span></div>' +
+        '<div class="pd-meta-item"><span class="pd-meta-label">CONTROL COST</span><span class="pd-meta-value">' + (item['Control Cost'] || '') + '</span></div>' +
+      '</div>' +
+      '<div class="pd-photo-wrap"><img class="pd-photo" src="' + detailSrc + '" alt="" /></div>' +
+      '<div class="pd-tagline">Superstition is the fog that<br>clouds your mind.</div>' +
+    '</div>';
+  });
+
+  container.innerHTML = html;
 }
 
 function printSite() {
-  buildPrintSingle();
-  setTimeout(() => window.print(), 400);
+  buildPrintAll();
+  setTimeout(() => window.print(), 600);
 }
 
 
 </script>
 
-<!-- PRINT SINGLE (current item) -->
-<div id="print-single" style="display:none"></div>
+<!-- PRINT ALL -->
+<div id="print-all" style="display:none"></div>
 <!-- PRINT BUTTON -->
 <button id="print-btn" onclick="printSite()">PRINT</button>
 
