@@ -659,58 +659,62 @@
       * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 
       body > *:not(#print-all) { display: none !important; }
-      #print-all { display: block !important; }
+
+      #print-all {
+        display: block !important;
+        margin: 0;
+        padding: 0;
+      }
 
       .print-page {
         width: 210mm;
-        height: 297mm;
-        max-height: 297mm;
+        height: 267mm;
         overflow: hidden;
         position: relative;
-        page-break-after: always;
-        page-break-inside: avoid;
         background: #fff;
-        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
         box-sizing: border-box;
+        break-after: page;
+        page-break-after: always;
       }
 
       .print-page:last-child {
+        break-after: auto;
         page-break-after: auto;
       }
 
       /* PAGE 1: blur 이미지 전체 (트레이싱지용) */
       .print-page-fog .ps-bg {
         position: absolute;
-        top: 0; left: 0;
-        width: 100%; height: 100%;
+        inset: 0;
       }
 
       .print-page-fog .ps-bg img {
-        width: 100%; height: 100%;
-        object-fit: cover;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        object-position: center;
         display: block;
         filter: grayscale(100%) blur(18px) brightness(1.1);
-        opacity: 0.65;
-        mix-blend-mode: multiply;
+        opacity: 0.7;
       }
 
-      /* PAGE 2: 메타데이터 (모조지용) */
+      /* PAGE 2: 메타데이터 + 원본이미지 (모조지용) */
       .print-page-detail {
-        display: flex;
-        flex-direction: column;
-        padding: 12mm 12mm 8mm;
+        display: block;
+        padding: 16mm 14mm;
         box-sizing: border-box;
-        height: 297mm;
+        width: 210mm;
+        height: 267mm;
         position: relative;
+        overflow: hidden;
       }
-
-      .pd-header { margin-bottom: 8mm; }
 
       .pd-ref {
         font-size: 9pt;
         letter-spacing: 0.08em;
         color: #000;
-        margin-bottom: 2mm;
+        margin-bottom: 3mm;
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
       }
 
       .pd-title {
@@ -720,13 +724,12 @@
         line-height: 1;
         text-transform: lowercase;
         color: #000;
+        margin-bottom: 10mm;
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
       }
 
-      .pd-meta-list {
-        display: flex;
-        flex-direction: column;
-        gap: 4mm;
-        margin-bottom: 8mm;
+      .pd-meta-item {
+        margin-bottom: 4mm;
       }
 
       .pd-meta-label {
@@ -737,6 +740,7 @@
         color: #000;
         line-height: 1.3;
         display: block;
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
       }
 
       .pd-meta-value {
@@ -745,16 +749,16 @@
         color: #000;
         line-height: 1.4;
         word-break: keep-all;
-        overflow-wrap: break-word;
         display: block;
+        font-family: 'Pretendard', 'Apple SD Gothic Neo', sans-serif;
       }
 
       .pd-photo-wrap {
         position: absolute;
-        right: 12mm;
-        bottom: 20mm;
-        width: 115mm;
-        height: 130mm;
+        right: 14mm;
+        top: 60mm;
+        width: 100mm;
+        height: 120mm;
       }
 
       .pd-photo {
@@ -767,19 +771,18 @@
 
       .pd-tagline {
         position: absolute;
-        bottom: 10mm;
-        left: 0;
-        width: 100%;
-        text-align: center;
+        bottom: 14mm;
+        left: 14mm;
         font-size: 8pt;
         font-weight: 300;
         color: #888;
         letter-spacing: 0.02em;
-        line-height: 1.5;
+        line-height: 1.6;
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
       }
 
       @page {
-        margin: 0;
+        margin: 15mm 0;
         size: A4 portrait;
       }
     }
